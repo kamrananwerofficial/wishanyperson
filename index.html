@@ -74,7 +74,7 @@ body:before{
 .script{
   font-family:Pacifico;
   font-size:38px;
-  color:#ff6fa3;
+  color:white;
   margin:10px 0;
 }
 
@@ -204,6 +204,70 @@ body:before{
   from { letter-spacing:1px; transform:scale(1); }
   to   { letter-spacing:3px; transform:scale(1.05); }
 }
+.row{
+  cursor:pointer;
+  font-size:16px;
+  padding:14px;
+  border-radius:12px;
+  /* background:#fff3f6; */
+  transition:.3s;
+}
+
+.row.activeHint{
+  animation: shakeHint .7s infinite;
+  box-shadow:0 0 0 0 rgba(255,0,90,.5);
+}
+
+@keyframes shakeHint{
+  0%{ transform:translateX(0) scale(1); }
+  25%{ transform:translateX(-4px) scale(1.05); }
+  50%{ transform:translateX(4px) scale(1.05); }
+  75%{ transform:translateX(-3px); }
+  100%{ transform:translateX(0); }
+}
+.warnText{
+  margin-top:10px;
+  color:#ff4d6d;
+  font-weight:700;
+  opacity:0;
+}
+
+.warnShake{
+  animation: warnShake .5s infinite;
+}
+
+@keyframes warnShake{
+  0%{ transform:translateX(0) }
+  25%{ transform:translateX(-6px) }
+  50%{ transform:translateX(6px) }
+  75%{ transform:translateX(-4px) }
+  100%{ transform:translateX(0) }
+}
+/* bigger circle */
+.bigBear{
+  width:170px;
+  height:170px;
+}
+
+/* bigger teddy */
+.teddyWave{
+  font-size:82px;
+  display:inline-block;
+  transform-origin: bottom center;
+  animation: teddyHello 1.4s infinite ease-in-out;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,.25));
+}
+
+/* waving style motion */
+@keyframes teddyHello{
+  0%   { transform: rotate(0deg) translateY(0); }
+  15%  { transform: rotate(-10deg) translateY(-4px); }
+  30%  { transform: rotate(12deg) translateY(0); }
+  45%  { transform: rotate(-8deg); }
+  60%  { transform: rotate(10deg); }
+  75%  { transform: rotate(-4deg); }
+  100% { transform: rotate(0deg); }
+}
 
 </style>
 </head>
@@ -213,53 +277,44 @@ body:before{
 <!-- 1️⃣ FIRST WINDOW -->
 
 <section class="screen active" id="s1">
-  <div class="avatarWrap"><div class="avatar">🧸</div></div>
+  <div class="avatarWrap bigBear">
+    <div class="avatar teddyWave">🧸</div>
+  </div>
+
   <div class="script">Hey Beautiful</div>
   <div class="sub">Do you even know how cute you are?</div>
   <button class="btn" onclick="go(2)">Open My Heart 🤍</button>
 </section>
-
 <!-- 2️⃣ MEASURE WINDOW -->
 
 <section class="screen" id="s2">
   <div class="card">
-    <div>Measuring your cuteness...</div>
+    <div id="measureText">Calculating cuteness...</div>
+
     <h1 id="percent" style="color:#ff6fa3;margin-top:10px">0%</h1>
-    <div class="bar"><div class="fill" id="fill"></div></div>
-    <div style="color:#ffb3c7">⚠ WARNING: TOO CUTE TO HANDLE</div>
+
+    <div class="bar">
+      <div class="fill" id="fill"></div>
+    </div>
+
+    <div id="warnText" class="warnText">⚠ TOO CUTE TO HANDLE</div>
   </div>
 </section>
 
-<!-- 3️⃣ HEART LIST -->
-
+<!-- 3️⃣ REVEAL WINDOW -->
 <section class="screen" id="s3">
-  <div class="avatarWrap" style="width:90px;height:90px">💗</div>
+  <div class="avatarWrap" style="width:90px;height:90px;font-size: 40px;">💗</div>
   <div class="script" style="font-size:30px">Just for you</div>
   <div class="sub">Tap each one to reveal</div>
 
   <div class="reveal" id="list"></div>
 
-  <button class="btn" onclick="go(5)" style="margin-top:15px">See more →</button>
+  <button id="moreBtn" class="btn" onclick="go(5)" style="margin-top:15px;display:none">
+    See more →
+  </button>
 </section>
 
-<!-- 4️⃣ REVEALED TEXT LIST -->
-
-<!-- <section class="screen" id="s4">
-  <div class="script" style="font-size:30px">Just for you</div>
-
-  <div class="reveal">
-    <div class="row">You look adorable</div>
-    <div class="row">You have the sweetest vibe</div>
-    <div class="row">You make things feel lighter</div>
-    <div class="row">You are naturally charming</div>
-    <div class="row">You make everything feel special</div>
-  </div>
-
-  <button class="btn" onclick="go(5)" style="margin-top:15px">See more →</button>
-</section> -->
-
-<!-- 5️⃣ NOTE CLOSED -->
-
+<!-- 6️⃣ NOTE OPEN -->
 <section class="screen" id="s5">
   <div class="script" style="font-size:28px">A little note for you</div>
   <div class="note" onclick="go(6)">
@@ -268,7 +323,6 @@ body:before{
   </div>
 </section>
 
-<!-- 6️⃣ NOTE OPEN -->
 
 <section class="screen" id="s6">
   <div class="script" style="font-size:28px">A little note for you</div>
@@ -286,6 +340,7 @@ body:before{
   </div>
 </section>
 
+<!-- 7️⃣ TEDDY -->
 <section class="screen" id="s7">
   <div class="teddy-wrap">
     <div class="teddy">🧸</div>
@@ -296,10 +351,10 @@ body:before{
   </div>
 </section>
 <script>
+  
+/* type note */
 function startTypeNote(){
-  const text = `You are more special than you know.
-Never forget how amazing you are.
-You bring light wherever you go.`;
+  const text = `Saba, ✨you are my most precious treasure. 💫Without you, my world feels empty😞. You’re my everything, and life is incomplete without you. ❤❤`;
 
   const el = document.getElementById("typeMsg");
   const btn = document.getElementById("doneBtn");
@@ -344,34 +399,90 @@ function go(n){
 }
 
 /* progress */
-
 function startMeasure(){
-  let p=0
-  const fill=document.getElementById("fill")
-  const txt=document.getElementById("percent")
+  let p = 0;
 
-  const t=setInterval(()=>{
-    p+=2
-    fill.style.width=p+"%"
-    txt.innerText=p+"%"
-    if(p>=120){
-      clearInterval(t)
-      setTimeout(()=>go(3),700)
+  const fill = document.getElementById("fill");
+  const txt  = document.getElementById("percent");
+  const warn = document.getElementById("warnText");
+  const label = document.getElementById("measureText");
+
+  // reset
+  fill.style.width = "0%";
+  txt.innerText = "0%";
+  warn.style.opacity = 0;
+  warn.classList.remove("warnShake");
+  label.innerText = "Calculating cuteness...";
+
+  const t = setInterval(() => {
+    p += 2;
+
+    fill.style.width = p + "%";
+    txt.innerText = p + "%";
+
+    if(p >= 120){
+      clearInterval(t);
+
+      // change text to warning
+      label.innerText = "Result Ready!";
+      warn.style.opacity = 1;
+      warn.classList.add("warnShake");
+
+      // delay then go next
+      setTimeout(() => go(3), 1500);
     }
-  },40)
+
+  }, 40);
 }
+
 
 function buildHidden(){
-  const list=document.getElementById("list")
-  list.innerHTML=""
-  for(let i=0;i<5;i++){
-    const d=document.createElement("div")
-    d.className="row"
-    d.innerHTML="💗"
-    d.onclick=()=>  d.innerHTML=i == 0 ? "You look adorable":i == 1 ? 'You have the sweetest': i == 2 ? 'You make things feel lighter':i == 3 ? 'You are naturally charming':'You make everything feel special'
-    list.appendChild(d)
-  }
+  const messages = [
+    "You look adorable",
+    "You have the sweetest smile",
+    "You make things feel lighter",
+    "You are naturally charming",
+    "You make everything feel special"
+  ];
+
+  const list = document.getElementById("list");
+  const btn  = document.getElementById("moreBtn");
+
+  list.innerHTML = "";
+  btn.style.display = "none";
+
+  let revealed = 0;
+
+  messages.forEach((msg, i) => {
+    const d = document.createElement("div");
+    d.className = "row";
+    d.innerHTML = "💗";
+
+    if(i === 0) d.classList.add("activeHint"); // first shake
+
+    d.onclick = () => {
+      if(d.dataset.done) return;
+
+      d.innerHTML = msg;
+      d.dataset.done = "1";
+      d.classList.remove("activeHint");
+      revealed++;
+
+      // activate next hint
+      const next = list.children[i+1];
+      if(next) next.classList.add("activeHint");
+
+      // all clicked → show button
+      if(revealed === messages.length){
+        btn.style.display = "inline-block";
+        btn.style.animation = "popBtn .5s ease";
+      }
+    };
+
+    list.appendChild(d);
+  });
 }
+
 
 /* note open */
 
